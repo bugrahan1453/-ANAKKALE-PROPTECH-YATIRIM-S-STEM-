@@ -90,8 +90,19 @@ def analyze_photos(listing_id: str, photo_urls: list[str]) -> dict:
 @celery_app.task(name="app.workers.tasks.ai_tasks.update_dom_counters")
 def update_dom_counters():
     """Gece yarısı aktif ilanların DOM sayacını 1 artır."""
-    # Gerçek uygulamada DB bağlantısıyla çalışır
-    logger.info("DOM sayaçları güncelleniyor...")
+    from sqlalchemy import create_engine, text
+    from app.core.config import settings
+
+    sync_url = settings.DATABASE_URL.replace("+asyncpg", "")
+    engine = create_engine(sync_url)
+    with engine.connect() as conn:
+        result = conn.execute(text(
+            "UPDATE listings SET days_on_market = days_on_market + 1, "
+            "real_days_on_market = real_days_on_market + 1 "
+            "WHERE status = 'active'"
+        ))
+        conn.commit()
+        logger.info(f"DOM sayaçları güncellendi: {result.rowcount} ilan")
 
 
 @celery_app.task(name="app.workers.tasks.ai_tasks.calculate_arv")

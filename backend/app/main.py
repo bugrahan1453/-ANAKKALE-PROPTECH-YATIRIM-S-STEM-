@@ -9,7 +9,7 @@ from app.core.database import engine, Base
 from app.api.v1.endpoints import (
     auth, listings, tasks, users, customers,
     portfolios, investor, voice, leaderboard,
-    geo, reports, legal, internal,
+    geo, reports, legal, internal, search, kvkk,
 )
 
 
@@ -55,6 +55,8 @@ app.include_router(geo.router, prefix="/api/v1")
 app.include_router(reports.router, prefix="/api/v1")
 app.include_router(legal.router, prefix="/api/v1")
 app.include_router(internal.router, prefix="/api/v1")
+app.include_router(search.router, prefix="/api/v1")
+app.include_router(kvkk.router, prefix="/api/v1")
 
 
 @app.get("/health")

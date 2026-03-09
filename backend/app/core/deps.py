@@ -1,8 +1,8 @@
-"""FastAPI bağımlılıkları — JWT doğrulama, RBAC, DB oturumu."""
+"""FastAPI bağımlılıkları — JWT doğrulama, RBAC, RLS DB oturumu."""
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, text
 from jose import JWTError
 
 from app.core.database import get_db
@@ -34,6 +34,21 @@ async def get_current_user(
     if not user:
         raise credentials_exception
     return user
+
+
+async def get_tenant_session(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> AsyncSession:
+    """
+    RLS aktif DB oturumu — Kullanıcının tenant_id'si ile set edilir.
+    Bu bağımlılık kullanıldığında PostgreSQL RLS politikaları otomatik çalışır.
+    """
+    await db.execute(
+        text("SET LOCAL app.current_tenant_id = :tid"),
+        {"tid": current_user.tenant_id},
+    )
+    return db
 
 
 def require_roles(*roles: UserRole):
