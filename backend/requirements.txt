@@ -1,0 +1,62 @@
+# ─── CORE ────────────────────────────────────────
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+python-multipart==0.0.9
+pydantic[email]==2.7.1
+pydantic-settings==2.2.1
+
+# ─── VERİTABANI ──────────────────────────────────
+sqlalchemy[asyncio]==2.0.30
+asyncpg==0.29.0
+alembic==1.13.1
+psycopg2-binary==2.9.9
+
+# ─── REDIS / CACHE ───────────────────────────────
+redis[hiredis]==5.0.4
+celery[redis]==5.4.0
+flower==2.0.1
+
+# ─── GÜVENLİK ────────────────────────────────────
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+cryptography==42.0.7
+
+# ─── YAPAY ZEKA ──────────────────────────────────
+openai==1.30.1
+anthropic==0.26.0
+pillow==10.3.0
+imagehash==4.3.1
+transformers==4.41.1
+torch==2.3.0
+torchvision==0.18.0
+
+# ─── NLP ─────────────────────────────────────────
+spacy==3.7.4
+nltk==3.8.1
+
+# ─── GÖREV / KUYRUK ──────────────────────────────
+celery==5.4.0
+kombu==5.3.4
+
+# ─── SMS / BİLDİRİM ──────────────────────────────
+twilio==9.1.0
+httpx==0.27.0
+aiosmtplib==3.0.1
+jinja2==3.1.4
+
+# ─── PDF ÜRETME ──────────────────────────────────
+weasyprint==62.1
+reportlab==4.2.0
+
+# ─── HARİTA / GEO ────────────────────────────────
+geopy==2.4.1
+shapely==2.0.4
+
+# ─── VERİ ────────────────────────────────────────
+pandas==2.2.2
+numpy==1.26.4
+
+# ─── TEST ─────────────────────────────────────────
+pytest==8.2.0
+pytest-asyncio==0.23.7
+httpx==0.27.0

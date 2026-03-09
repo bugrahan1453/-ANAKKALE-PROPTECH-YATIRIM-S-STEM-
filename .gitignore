@@ -1,0 +1,41 @@
+# Ortam değişkenleri — ASLA commit'leme
+.env
+*.env.local
+*.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+dist/
+*.egg-info/
+
+# Node.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Docker
+docker-compose.override.yml
+
+# Medya ve modeller
+media/
+ai_engine/models/
+*.h5
+*.pt
+*.pth
+
+# Log
+*.log
+logs/
+
+# Sertifikalar
+nginx/certs/
