@@ -12,6 +12,7 @@ celery_app = Celery(
         "app.workers.tasks.ai_tasks",
         "app.workers.tasks.notification_tasks",
         "app.workers.tasks.crm_tasks",
+        "app.workers.tasks.macro_tasks",
     ],
 )
 
@@ -36,6 +37,26 @@ celery_app.conf.beat_schedule = {
         "task": "app.workers.tasks.ai_tasks.update_dom_counters",
         "schedule": crontab(hour=0, minute=30),
     },
+    # Her gün 09:00'da faiz kontrolü
+    "check-interest-rate": {
+        "task": "app.workers.tasks.macro_tasks.check_interest_rate",
+        "schedule": crontab(hour=9, minute=0),
+    },
+    # Her 6 saatte fiyat düşüşü kontrolü
+    "check-price-drops": {
+        "task": "app.workers.tasks.macro_tasks.check_price_drops",
+        "schedule": crontab(hour="*/6", minute=15),
+    },
+    # Gece yarısı kiralıktan satılığa dönüştürme kontrolü
+    "check-long-vacant-rentals": {
+        "task": "app.workers.tasks.crm_tasks.check_long_vacant_rentals",
+        "schedule": crontab(hour=1, minute=0),
+    },
+    # Her gün 18:00'de leaderboard ödülleri
+    "award-leaderboard-leads": {
+        "task": "app.workers.tasks.crm_tasks.award_leaderboard_leads",
+        "schedule": crontab(hour=18, minute=0),
+    },
 }
 
 celery_app.conf.task_routes = {
@@ -43,4 +64,5 @@ celery_app.conf.task_routes = {
     "app.workers.tasks.ai_tasks.*": {"queue": "ai"},
     "app.workers.tasks.notification_tasks.*": {"queue": "notifications"},
     "app.workers.tasks.crm_tasks.*": {"queue": "crm"},
+    "app.workers.tasks.macro_tasks.*": {"queue": "notifications"},
 }

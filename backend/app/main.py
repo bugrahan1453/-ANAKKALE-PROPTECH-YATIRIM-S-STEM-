@@ -6,7 +6,11 @@ from contextlib import asynccontextmanager
 
 from app.core.config import settings
 from app.core.database import engine, Base
-from app.api.v1.endpoints import auth, listings, tasks
+from app.api.v1.endpoints import (
+    auth, listings, tasks, users, customers,
+    portfolios, investor, voice, leaderboard,
+    geo, reports, legal, internal,
+)
 
 
 @asynccontextmanager
@@ -39,8 +43,18 @@ app.add_middleware(
 
 # ─── ROUTER ──────────────────────────────────────
 app.include_router(auth.router, prefix="/api/v1")
+app.include_router(users.router, prefix="/api/v1")
 app.include_router(listings.router, prefix="/api/v1")
+app.include_router(customers.router, prefix="/api/v1")
+app.include_router(portfolios.router, prefix="/api/v1")
 app.include_router(tasks.router, prefix="/api/v1")
+app.include_router(investor.router, prefix="/api/v1")
+app.include_router(voice.router, prefix="/api/v1")
+app.include_router(leaderboard.router, prefix="/api/v1")
+app.include_router(geo.router, prefix="/api/v1")
+app.include_router(reports.router, prefix="/api/v1")
+app.include_router(legal.router, prefix="/api/v1")
+app.include_router(internal.router, prefix="/api/v1")
 
 
 @app.get("/health")
