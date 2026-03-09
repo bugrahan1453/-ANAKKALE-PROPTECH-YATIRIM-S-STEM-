@@ -160,20 +160,44 @@ def _request_message(request_type: DataRequestType) -> str:
     return messages.get(request_type, "Talebiniz alındı.")
 
 
+@router.get("/export/{request_id}")
+async def download_export(
+    request_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_tenant_session),
+):
+    """KVKK madde 11(e) — Hazırlanan veri paketini indir."""
+    import os
+    from fastapi.responses import FileResponse
+
+    req = await db.get(DataRequest, request_id)
+    if not req or req.user_id != current_user.id:
+        raise HTTPException(status_code=404, detail="Talep bulunamadı")
+    if req.status != DataRequestStatus.COMPLETED:
+        raise HTTPException(status_code=400, detail="Veri paketi henüz hazır değil")
+
+    export_path = f"/tmp/kvkk_export_{request_id}.json"
+    if os.path.exists(export_path):
+        return FileResponse(
+            export_path,
+            media_type="application/json",
+            filename=f"verilerim_{request_id[:8]}.json",
+        )
+    raise HTTPException(status_code=404, detail="Export dosyası bulunamadı")
+
+
 async def _export_user_data(user_id: str, request_id: str):
-    """
-    Kullanıcının tüm verisini JSON olarak paketler.
-    Gerçek üretimde: S3'e yükle, şifrele, imzalı URL gönder.
-    """
+    """Kullanıcının tüm verisini JSON olarak paketler ve /tmp'ye kaydeder."""
     from app.core.database import AsyncSessionLocal
     from app.models.task import Task
-    from app.models.portfolio import Portfolio
 
     async with AsyncSessionLocal() as db:
         try:
             tasks_r = await db.execute(select(Task).where(Task.assigned_to_id == user_id))
-            tasks = [{"id": t.id, "type": t.task_type, "status": t.status, "created": str(t.created_at)}
-                     for t in tasks_r.scalars().all()]
+            tasks = [
+                {"id": t.id, "type": t.task_type, "status": t.status, "created": str(t.created_at)}
+                for t in tasks_r.scalars().all()
+            ]
 
             export = {
                 "user_id": user_id,
@@ -182,10 +206,10 @@ async def _export_user_data(user_id: str, request_id: str):
                 "note": "KVKK madde 11(e) kapsamında veri taşınabilirliği paketi",
             }
 
-            # TODO: S3'e yükle veya şifreli dosya oluştur
-            export_json = json.dumps(export, ensure_ascii=False, indent=2)
+            export_path = f"/tmp/kvkk_export_{request_id}.json"
+            with open(export_path, "w", encoding="utf-8") as f:
+                f.write(json.dumps(export, ensure_ascii=False, indent=2))
 
-            # DataRequest kaydını güncelle
             req = await db.get(DataRequest, request_id)
             if req:
                 req.status = DataRequestStatus.COMPLETED

@@ -46,7 +46,13 @@ export default function ValuationPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Mahalle</label>
             <select value={form.neighborhood} onChange={(e) => setForm({ ...form, neighborhood: e.target.value })} className="w-full px-4 py-2 border rounded-lg text-sm">
-              {["Kepez", "Barbaros", "Güzelyalı", "Çanakkale Merkez", "Çan", "Biga"].map((n) => (
+              {[
+                "Kepez", "Barbaros", "Güzelyalı", "Çanakkale Merkez",
+                "Fevzipaşa", "İsmetpaşa", "Cumhuriyet", "Sarıcaeli",
+                "Hacımemet", "Terzioğlu", "Dardanos", "Kalafat",
+                "Çan", "Biga", "Gelibolu", "Lapseki", "Ezine",
+                "Ayvacık", "Bayramiç", "Eceabat", "Bozcaada", "Gökçeada", "Yenice",
+              ].map((n) => (
                 <option key={n}>{n}</option>
               ))}
             </select>
