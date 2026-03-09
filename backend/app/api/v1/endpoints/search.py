@@ -4,13 +4,14 @@ import httpx
 import logging
 
 from app.core.deps import get_current_user
+from app.core.config import settings
 from app.models.user import User
 
 router = APIRouter(prefix="/search", tags=["search"])
 logger = logging.getLogger(__name__)
 
-ES_URL = "http://elasticsearch:9200"
-INDEX_NAME = "listings"
+ES_URL = settings.ELASTICSEARCH_URL
+INDEX_NAME = settings.ELASTICSEARCH_INDEX
 
 
 @router.get("/")

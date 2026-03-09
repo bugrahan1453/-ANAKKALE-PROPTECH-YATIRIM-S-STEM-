@@ -42,6 +42,10 @@ class Settings(BaseSettings):
     PROXY_API_KEY: str = ""
     SCRAPE_INTERVAL_MINUTES: int = 30
 
+    # Arama (Elasticsearch)
+    ELASTICSEARCH_URL: str = "http://elasticsearch:9200"
+    ELASTICSEARCH_INDEX: str = "listings"
+
     # Harita
     GOOGLE_MAPS_API_KEY: str = ""
     TKGM_API_KEY: str = ""
